@@ -1,6 +1,4 @@
-// Background script
 chrome.runtime.onInstalled.addListener(() => {
-    // Set the initial state
     chrome.storage.local.set({ extensionEnabled: false });
   });
   
@@ -8,13 +6,17 @@ chrome.runtime.onInstalled.addListener(() => {
     if (message.action === 'toggleExtension') {
       chrome.storage.local.set({ extensionEnabled: message.enabled }, () => {
         if (message.enabled) {
-          chrome.scripting.executeScript({
-            target: { tabId: sender.tab.id },
-            files: ['content.js']
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0].id) {
+              chrome.scripting.executeScript({
+                target: { tabId: tabs[0].id },
+                files: ['content.js']
+              });
+            }
           });
         }
         sendResponse({ status: 'done' });
       });
-      return true; // Indicates that the response is asynchronous
+      return true;
     }
   });

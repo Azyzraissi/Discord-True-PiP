@@ -1,4 +1,3 @@
-// Content script
 function enablePictureInPicture() {
     const videoElements = document.getElementsByTagName('video');
   
@@ -32,7 +31,6 @@ function enablePictureInPicture() {
     });
   }
   
-  // Check if the extension is enabled and run the function
   chrome.storage.local.get('extensionEnabled', (result) => {
     if (result.extensionEnabled) {
       enablePictureInPicture();
