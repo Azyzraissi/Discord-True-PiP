@@ -1,5 +1,7 @@
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.local.set({ extensionEnabled: false });
+    chrome.storage.local.set({ extensionEnabled: true }, () => {
+      console.log("Extension enabled by default on installation.");
+    });
   });
   
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

@@ -56,3 +56,17 @@ function enablePictureInPicture() {
       enablePictureInPicture();
     }
   });
+  
+  // Listen for messages to enable/disable the extension dynamically
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message.extensionEnabled) {
+      enablePictureInPicture();
+    } else {
+      // Exit Picture-in-Picture mode if the extension is disabled
+      if (document.pictureInPictureElement) {
+        document.exitPictureInPicture().catch(error => {
+          console.error('Error exiting Picture-in-Picture mode:', error);
+        });
+      }
+    }
+  });

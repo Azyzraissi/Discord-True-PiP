@@ -1,15 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const toggle = document.getElementById('toggleExtension');
+    const toggleButton = document.getElementById('toggleButton');
   
+    // Set the initial state of the toggle button based on the stored value
     chrome.storage.local.get('extensionEnabled', (result) => {
-      toggle.checked = result.extensionEnabled;
+      toggleButton.checked = result.extensionEnabled;
     });
   
-    toggle.addEventListener('change', () => {
-      const enabled = toggle.checked;
-      chrome.storage.local.set({ extensionEnabled: enabled });
+    // Add an event listener to the toggle button
+    toggleButton.addEventListener('change', () => {
+      const isEnabled = toggleButton.checked;
+      chrome.storage.local.set({ extensionEnabled: isEnabled });
+      
+      // Notify content scripts about the change
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.runtime.sendMessage({ action: 'toggleExtension', enabled: enabled });
+        chrome.tabs.sendMessage(tabs[0].id, { extensionEnabled: isEnabled });
       });
     });
   });
