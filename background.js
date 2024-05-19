@@ -1,8 +1,8 @@
 // Background script
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === 'complete') {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.enable) {
       chrome.scripting.executeScript({
-        target: { tabId: tabId },
+        target: { tabId: sender.tab.id },
         files: ['content.js']
       });
     }

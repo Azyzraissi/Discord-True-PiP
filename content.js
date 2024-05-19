@@ -32,4 +32,9 @@ function enablePictureInPicture() {
     });
   }
   
-  enablePictureInPicture(); // Call the function when the page loads
+  // Check if extension is enabled
+  chrome.runtime.sendMessage({ enable: true }, response => {
+    if (response && response.enabled) {
+      enablePictureInPicture(); // Call the function when the page loads
+    }
+  });

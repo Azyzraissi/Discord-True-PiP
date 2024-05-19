@@ -3,10 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Picture-in-Picture Extension</title>
+  <title>Discord Picture-in-Picture Extension</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Picture-in-Picture Extension</h1>
-  <p>This extension enables Picture-in-Picture mode for all video elements on webpages.</p>
+  <h1>Discord Picture-in-Picture Extension</h1>
+  <p>This extension enables Picture-in-Picture mode for all video elements on the Discord website.</p>
+  <label>
+    <input type="checkbox" id="toggleExtension"> Enable Extension
+  </label>
+
+  <script>
+    // Function to save extension state to local storage
+    function saveExtensionState(enabled) {
+      localStorage.setItem('extensionEnabled', enabled);
+    }
+
+    // Function to load extension state from local storage
+    function loadExtensionState() {
+      return localStorage.getItem('extensionEnabled') === 'true';
+    }
+
+    // Function to update extension state and UI
+    function updateExtensionState(enabled) {
+      document.getElementById('toggleExtension').checked = enabled;
+      saveExtensionState(enabled);
+      // Send message to background script to enable/disable content script
+      chrome.runtime.sendMessage({ enable: enabled });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load extension state from local storage
+      const extensionEnabled = loadExtensionState();
+      // Update UI based on extension state
+      updateExtensionState(extensionEnabled);
+
+      // Add event listener for toggle button
+      document.getElementById('toggleExtension').addEventListener('change', function() {
+        updateExtensionState(this.checked);
+      });
+    });
+  </script>
 </body>
 </html>

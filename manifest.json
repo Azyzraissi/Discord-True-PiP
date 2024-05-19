@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Picture-in-Picture Extension",
+    "name": "Discord Picture-in-Picture Extension",
     "version": "1.0",
     "permissions": ["activeTab"],
     "background": {
@@ -13,5 +13,11 @@
         "48": "icon.png",
         "128": "icon.png"
       }
-    }
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://discord.com/*"],
+        "js": ["content.js"]
+      }
+    ]
   }
