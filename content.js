@@ -14,29 +14,27 @@ function enablePictureInPicture() {
       }
     }
   
+    function checkAndEnterPiP() {
+      Array.from(videoElements).forEach(video => {
+        enterPiP(video);
+      });
+    }
+  
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
-        Array.from(videoElements).forEach(video => {
-          enterPiP(video);
-        });
+        checkAndEnterPiP();
       }
     });
   
     window.addEventListener('resize', () => {
       if (!document.hidden) {
-        Array.from(videoElements).forEach(video => {
-          if (document.pictureInPictureElement === video) {
-            enterPiP(video);
-          }
-        });
+        checkAndEnterPiP();
       }
     });
   
     // Initial check
     if (document.visibilityState === 'hidden') {
-      Array.from(videoElements).forEach(video => {
-        enterPiP(video);
-      });
+      checkAndEnterPiP();
     }
   }
   
