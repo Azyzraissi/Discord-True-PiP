@@ -6,14 +6,18 @@ function enablePictureInPicture() {
       return;
     }
   
+    function enterPiP(video) {
+      if (document.pictureInPictureElement !== video) {
+        video.requestPictureInPicture().catch(error => {
+          console.error('Error entering Picture-in-Picture mode:', error);
+        });
+      }
+    }
+  
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
         Array.from(videoElements).forEach(video => {
-          if (document.pictureInPictureElement !== video) {
-            video.requestPictureInPicture().catch(error => {
-              console.error('Error entering Picture-in-Picture mode:', error);
-            });
-          }
+          enterPiP(video);
         });
       }
     });
@@ -22,15 +26,21 @@ function enablePictureInPicture() {
       if (!document.hidden) {
         Array.from(videoElements).forEach(video => {
           if (document.pictureInPictureElement === video) {
-            video.requestPictureInPicture().catch(error => {
-              console.error('Error entering Picture-in-Picture mode:', error);
-            });
+            enterPiP(video);
           }
         });
       }
     });
+  
+    // Initial check
+    if (document.visibilityState === 'hidden') {
+      Array.from(videoElements).forEach(video => {
+        enterPiP(video);
+      });
+    }
   }
   
+  // Check if the extension is enabled and run the function
   chrome.storage.local.get('extensionEnabled', (result) => {
     if (result.extensionEnabled) {
       enablePictureInPicture();
