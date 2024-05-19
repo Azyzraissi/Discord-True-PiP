@@ -6,19 +6,19 @@ function enablePictureInPicture() {
       return;
     }
   
-    function enterPiP(video) {
+    async function enterPiP(video) {
       if (document.pictureInPictureElement !== video) {
-        video.requestPictureInPicture().catch(error => {
+        try {
+          await video.requestPictureInPicture();
+        } catch (error) {
           console.error('Error entering Picture-in-Picture mode:', error);
-        });
+        }
       }
     }
   
     function checkAndEnterPiP() {
       Array.from(videoElements).forEach(video => {
-        if (!document.pictureInPictureElement) {
-          enterPiP(video);
-        }
+        enterPiP(video);
       });
     }
   
@@ -29,11 +29,15 @@ function enablePictureInPicture() {
     });
   
     window.addEventListener('focus', () => {
-      checkAndEnterPiP();
+      if (!document.hidden) {
+        checkAndEnterPiP();
+      }
     });
   
     window.addEventListener('resize', () => {
-      checkAndEnterPiP();
+      if (!document.hidden) {
+        checkAndEnterPiP();
+      }
     });
   
     // Initial check
