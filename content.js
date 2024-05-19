@@ -16,7 +16,9 @@ function enablePictureInPicture() {
   
     function checkAndEnterPiP() {
       Array.from(videoElements).forEach(video => {
-        enterPiP(video);
+        if (!document.pictureInPictureElement) {
+          enterPiP(video);
+        }
       });
     }
   
@@ -26,10 +28,12 @@ function enablePictureInPicture() {
       }
     });
   
+    window.addEventListener('focus', () => {
+      checkAndEnterPiP();
+    });
+  
     window.addEventListener('resize', () => {
-      if (!document.hidden) {
-        checkAndEnterPiP();
-      }
+      checkAndEnterPiP();
     });
   
     // Initial check
