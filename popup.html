@@ -23,33 +23,21 @@
   </label>
 
   <script>
-    // Function to save extension state to local storage
-    function saveExtensionState(enabled) {
-      localStorage.setItem('extensionEnabled', enabled);
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('toggleExtension');
 
-    // Function to load extension state from local storage
-    function loadExtensionState() {
-      return localStorage.getItem('extensionEnabled') === 'true';
-    }
+      // Load the current state from storage
+      chrome.storage.local.get('extensionEnabled', (result) => {
+        toggle.checked = result.extensionEnabled;
+      });
 
-    // Function to update extension state and UI
-    function updateExtensionState(enabled) {
-      document.getElementById('toggleExtension').checked = enabled;
-      saveExtensionState(enabled);
-      // Send message to background script to enable/disable content script
-      chrome.runtime.sendMessage({ enable: enabled });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      // Load extension state from local storage
-      const extensionEnabled = loadExtensionState();
-      // Update UI based on extension state
-      updateExtensionState(extensionEnabled);
-
-      // Add event listener for toggle button
-      document.getElementById('toggleExtension').addEventListener('change', function() {
-        updateExtensionState(this.checked);
+      // Add event listener to the checkbox
+      toggle.addEventListener('change', () => {
+        const enabled = toggle.checked;
+        chrome.storage.local.set({ extensionEnabled: enabled });
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          chrome.runtime.sendMessage({ action: 'toggleExtension', enabled: enabled });
+        });
       });
     });
   </script>
