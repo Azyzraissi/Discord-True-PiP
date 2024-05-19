@@ -11,14 +11,18 @@ function enablePictureInPicture() {
         try {
           await video.requestPictureInPicture();
         } catch (error) {
-          console.error('Error entering Picture-in-Picture mode:', error);
+          if (error.name === 'NotAllowedError' || error.name === 'NotSupportedError') {
+            console.error('Error entering Picture-in-Picture mode:', error);
+          }
         }
       }
     }
   
     function checkAndEnterPiP() {
       Array.from(videoElements).forEach(video => {
-        enterPiP(video);
+        if (!document.pictureInPictureElement && !video.paused && !video.ended) {
+          enterPiP(video);
+        }
       });
     }
   
