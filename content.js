@@ -41,9 +41,7 @@ function enablePictureInPicture() {
     const videoElements = document.getElementsByTagName('video');
     Array.from(videoElements).forEach(video => {
       video.addEventListener('play', () => {
-        if (document.hidden || !document.hasFocus()) {
-          enterPiP(video);
-        }
+        // Do not enter PiP on play, wait for focus loss or tab switch
       });
 
       video.addEventListener('pause', () => {
@@ -54,9 +52,10 @@ function enablePictureInPicture() {
         exitPiP();
       });
 
-      video.addEventListener('enterpictureinpicture', () => {
-        if (!pipActive) {
-          exitPiP(); // Close our PiP if Discord's internal PiP is triggered
+      video.addEventListener('enterpictureinpicture', (event) => {
+        if (!pipActive && event.target !== document.pictureInPictureElement) {
+          // Close our PiP if Discord's internal PiP is triggered
+          exitPiP();
         }
       });
 
@@ -92,17 +91,16 @@ function enablePictureInPicture() {
   });
 
   window.addEventListener('focus', () => {
-    // Keep PiP active when the window gains focus
+    // Do not exit PiP on focus
   });
 
-  // Initial check
-  if (document.visibilityState === 'hidden' || !document.hasFocus()) {
-    checkAndEnterPiP();
-  }
+  // Initial check (do not enter PiP immediately, wait for focus loss or tab switch)
+  // if (document.visibilityState === 'hidden' || !document.hasFocus()) {
+  //   checkAndEnterPiP();
+  // }
 
   // Monitor URL changes to keep PiP active when navigating within Discord
   const observer = new MutationObserver(() => {
-    checkAndEnterPiP();
     monitorVideos();
   });
 
